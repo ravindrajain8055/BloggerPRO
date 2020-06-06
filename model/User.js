@@ -1,7 +1,6 @@
-const mongoose = require("mongoose");
-const crypto = require("crypto");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const mongoose = require('mongoose');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema(
   {
@@ -17,17 +16,17 @@ const UserSchema = new mongoose.Schema(
     name: {
       type: String,
       trim: true,
-      required: [true, "please add a name"],
+      required: [true, 'please add a name'],
       max: 32,
     },
     email: {
       type: String,
       trim: true,
-      required: [true, "Please add a email"],
+      required: [true, 'Please add a email'],
       unique: true,
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        "Please add a valid email",
+        'Please add a valid email',
       ],
     },
     profile: {
@@ -36,11 +35,11 @@ const UserSchema = new mongoose.Schema(
     },
     hashed_password: {
       type: String,
-      required: [true, "please add a password"],
+      required: [true, 'please add a password'],
       minlength: 7,
       select: false,
     },
-    salt: Number,
+    salt: String,
     about: {
       type: String,
     },
@@ -62,7 +61,7 @@ const UserSchema = new mongoose.Schema(
     // token back to the server then will be verify
     resetPasswordLink: {
       data: String,
-      default: "",
+      default: '',
     },
     // ,
     // createdAt: {
@@ -75,7 +74,7 @@ const UserSchema = new mongoose.Schema(
 
 // Virtuals are document props that you can get & set but that doesnt persist to database
 // we should not use arrow function here cause they dont have their own scope of this keyword
-UserSchema.virtual("password")
+UserSchema.virtual('password')
   .set(function (password) {
     // create a temporary var _password
     this._password = password;
@@ -93,17 +92,17 @@ UserSchema.methods = {
     return this.encryptpassword(enteredPassword) === this.hashed_password;
   },
   encryptpassword: function (password) {
-    if (!password) return "";
+    if (!password) return '';
     try {
       return crypto
-        .createHmac("sha1", this.salt)
+        .createHmac('sha1', this.salt)
         .update(password)
-        .digest("hex");
+        .digest('hex');
     } catch (err) {}
   },
   makeSalt: function () {
-    return Math.round(new Date().valueOf() * Math.random()) + "";
+    return Math.round(new Date().valueOf() * Math.random()) + '';
   },
 };
 
-module.exports = mongoose.model(User, UserSchema);
+module.exports = mongoose.model('User', UserSchema);

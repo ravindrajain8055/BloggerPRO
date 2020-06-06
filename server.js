@@ -1,29 +1,26 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const cookieParser = require("cookie-parser");
-const path = require("path");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const connectDB = require("./config/db");
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
+const express = require('express');
+const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
+const path = require('path');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const connectDB = require('./config/db');
+const morgan = require('morgan');
 
-dotenv.config({ path: "./config/config.env" });
+dotenv.config({ path: './config/config.env' });
 
 const app = express();
 
 connectDB();
 
-app.use(morgan("dev"));
-app.use(bodyParser.json());
-// routes
-// app.use('/api', require('./routes/blog'))
-app.use("/api", require("./routes/auth"));
-
-// Body parser
+app.use(morgan('dev'));
 app.use(express.json());
+// routes
+app.use('/api', require('./routes/blog'));
+app.use('/api', require('./routes/auth'));
+
 // CORS (Cross-Origin resource sharing)
-if (process.env.NODE_ENV == "development") {
+if (process.env.NODE_ENV == 'development') {
   app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
 }
 
