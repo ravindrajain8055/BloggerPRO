@@ -12,6 +12,7 @@ const app = express();
 
 connectDB();
 // routes
+app.use('/', require('./routes/blog'))
 
 // Body parser
 app.use(express.json());
