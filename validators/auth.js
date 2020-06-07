@@ -14,3 +14,7 @@ exports.userSigninValidator = [
     .isLength({ min: 7 })
     .withMessage('Enter a Valid email address'),
 ];
+
+exports.categoryCreateValidator = [
+  check('name').not().isEmpty().withMessage('Name is Required'),
+];

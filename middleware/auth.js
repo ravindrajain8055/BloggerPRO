@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../model/User');
 
 // Protect routes
-exports.protect = asyncHandler(async (req, res, next) => {
+exports.protect = async (req, res, next) => {
   let token;
 
   if (
@@ -27,7 +27,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.user = await User.findById(decoded.id);
+    req.user = await User.findById(decoded._id);
 
     next();
   } catch (err) {
@@ -35,4 +35,4 @@ exports.protect = asyncHandler(async (req, res, next) => {
       error: 'Unauthorized to access this route',
     });
   }
-});
+};

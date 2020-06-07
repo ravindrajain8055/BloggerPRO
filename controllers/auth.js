@@ -27,7 +27,6 @@ exports.signup = async (req, res, next) => {
         error: err,
       });
     }
-    res.status(200).json({ message: 'signup success', user: user });
 
     sendTokenResponse(user, 200, res);
   });
@@ -75,6 +74,7 @@ const sendTokenResponse = (user, statusCode, res) => {
   res.status(statusCode).cookie('token', token, options).json({
     success: true,
     token,
+    user: user,
   });
 };
 
@@ -86,5 +86,24 @@ exports.signout = (req, res, next) => {
 
   res.status(200).json({
     message: 'Signout Success',
+  });
+};
+
+exports.adminMiddleware = (req, res, next) => {
+  const adminUserId = req.user.id;
+  User.findById({ _id: adminUserId }).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: 'User not found',
+      });
+    }
+
+    if (user.role !== 1) {
+      return res.status(400).json({
+        error: 'Admin resource,Access denied',
+      });
+    }
+    req.profile = user;
+    next();
   });
 };
