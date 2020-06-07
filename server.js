@@ -12,7 +12,7 @@ dotenv.config({ path: './config/config.env' });
 const app = express();
 
 connectDB();
-
+// a Logger middleware
 app.use(morgan('dev'));
 app.use(express.json());
 // routes

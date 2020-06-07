@@ -39,7 +39,10 @@ const UserSchema = new mongoose.Schema(
       minlength: 7,
       select: false,
     },
-    salt: String,
+    salt: {
+      type: String,
+      select: false,
+    },
     about: {
       type: String,
     },
@@ -87,22 +90,19 @@ UserSchema.virtual('password')
     return this._password;
   });
 
-UserSchema.methods = {
-  authenticate: function (enteredPassword) {
-    return this.encryptpassword(enteredPassword) === this.hashed_password;
-  },
-  encryptpassword: function (password) {
-    if (!password) return '';
-    try {
-      return crypto
-        .createHmac('sha1', this.salt)
-        .update(password)
-        .digest('hex');
-    } catch (err) {}
-  },
-  makeSalt: function () {
-    return Math.round(new Date().valueOf() * Math.random()) + '';
-  },
+UserSchema.methods.authenticate = async function (enteredPassword) {
+  return (await this.encryptpassword(enteredPassword)) === this.hashed_password;
+};
+
+UserSchema.methods.encryptpassword = function (password) {
+  if (!password) return '';
+  try {
+    return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
+  } catch (err) {}
+};
+
+UserSchema.methods.makeSalt = function () {
+  return Math.round(new Date().valueOf() * Math.random()) + '';
 };
 
 module.exports = mongoose.model('User', UserSchema);

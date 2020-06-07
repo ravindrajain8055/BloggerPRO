@@ -7,3 +7,10 @@ exports.userSignupValidator = [
     .isLength({ min: 7 })
     .withMessage('Enter a Valid email address'),
 ];
+
+exports.userSigninValidator = [
+  check('email').isEmail().withMessage('Enter a Valid email address'),
+  check('password')
+    .isLength({ min: 7 })
+    .withMessage('Enter a Valid email address'),
+];
