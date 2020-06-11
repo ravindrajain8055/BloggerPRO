@@ -260,3 +260,22 @@ exports.update = (req, res) => {
     });
   });
 };
+
+exports.related = (req, res) => {
+  let limit = req.body.limit ? parseInt(req.body.limit) : 10;
+
+  const { _id, category } = req.body;
+
+  Blog.find({ _id: { $ne: _id }, categories: { $in: categories } })
+    .limit(limit)
+    .populate('postedBy', '_id name profile')
+    .exec((err, data) => {
+      if (err) {
+        return res.status(400).json({
+          error: errorHandler(err),
+        });
+      }
+
+      res.json(data);
+    });
+};
