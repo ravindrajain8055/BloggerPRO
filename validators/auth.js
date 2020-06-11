@@ -18,3 +18,7 @@ exports.userSigninValidator = [
 exports.categoryCreateValidator = [
   check('name').not().isEmpty().withMessage('Name is Required'),
 ];
+
+exports.tagCreateValidator = [
+  check('name').not().isEmpty().withMessage('Name is Required'),
+];
