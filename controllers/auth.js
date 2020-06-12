@@ -4,6 +4,7 @@ const shortId = require('shortid');
 const jwt = require('jsonwebtoken');
 // This will help us check if the token has expired or if it is valid
 const expressJwt = require('express-jwt');
+const { errorHandler } = require('../middleware/errorHandler');
 
 // access public
 // route POST /api/signup
@@ -104,6 +105,26 @@ exports.adminMiddleware = (req, res, next) => {
       });
     }
     req.profile = user;
+    next();
+  });
+};
+
+exports.canUpdateDelete = (req, res, next) => {
+  const slug = req.params.slug;
+  Blog.findOne({ slug }).exec((err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: errorHandler(err),
+      });
+    }
+    if (data.postedBy._id.toString() === req.user.id.toString()) {
+      user = req.user;
+    }
+    if (!user) {
+      return res.status(400).json({
+        error: 'Not Authorised',
+      });
+    }
     next();
   });
 };
